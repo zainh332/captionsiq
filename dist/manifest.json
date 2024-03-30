@@ -1,0 +1,138 @@
+{
+  "public/fonts/Mont-Bold.ttf": {
+    "file": "assets/Mont-Bold-wkVb6EZH.ttf",
+    "src": "public/fonts/Mont-Bold.ttf"
+  },
+  "public/fonts/Mont-Regular.ttf": {
+    "file": "assets/Mont-Regular-DkehNPDO.ttf",
+    "src": "public/fonts/Mont-Regular.ttf"
+  },
+  "public/fonts/Mont-SemiBold.ttf": {
+    "file": "assets/Mont-SemiBold-D4hJrQPU.ttf",
+    "src": "public/fonts/Mont-SemiBold.ttf"
+  },
+  "resources/css/style.css": {
+    "file": "assets/style-Bz0_o9Aj.css",
+    "src": "resources/css/style.css",
+    "isEntry": true
+  },
+  "src/assets/Logo.png": {
+    "file": "assets/Logo-BCBOvwmj.png",
+    "src": "src/assets/Logo.png"
+  },
+  "src/assets/LogoWhite.png": {
+    "file": "assets/LogoWhite-o_kTWGci.png",
+    "src": "src/assets/LogoWhite.png"
+  },
+  "src/assets/images/Frame 15.png": {
+    "file": "assets/Frame 15-BmqwzmJW.png",
+    "src": "src/assets/images/Frame 15.png"
+  },
+  "src/assets/images/Frame 16.png": {
+    "file": "assets/Frame 16-C7I4zQBj.png",
+    "src": "src/assets/images/Frame 16.png"
+  },
+  "src/assets/images/Frame 17.png": {
+    "file": "assets/Frame 17-BuKcds7U.png",
+    "src": "src/assets/images/Frame 17.png"
+  },
+  "src/assets/images/Frame 18.png": {
+    "file": "assets/Frame 18-LLrPyic4.png",
+    "src": "src/assets/images/Frame 18.png"
+  },
+  "src/assets/images/Frame 19.png": {
+    "file": "assets/Frame 19-CgsKjhTR.png",
+    "src": "src/assets/images/Frame 19.png"
+  },
+  "src/assets/images/Group 34.png": {
+    "file": "assets/Group 34-C-DMRYkG.png",
+    "src": "src/assets/images/Group 34.png"
+  },
+  "src/assets/images/Header.png": {
+    "file": "assets/Header-BoPZeXXE.png",
+    "src": "src/assets/images/Header.png"
+  },
+  "src/assets/images/InputField.png": {
+    "file": "assets/InputField-Bah0LwCQ.png",
+    "src": "src/assets/images/InputField.png"
+  },
+  "src/assets/images/Mask.png": {
+    "file": "assets/Mask-ZxUH2MCM.png",
+    "src": "src/assets/images/Mask.png"
+  },
+  "src/assets/images/Mask2.png": {
+    "file": "assets/Mask2-DEaNDhWL.png",
+    "src": "src/assets/images/Mask2.png"
+  },
+  "src/assets/images/Qoutation.png": {
+    "file": "assets/Qoutation-C5IcbgnP.png",
+    "src": "src/assets/images/Qoutation.png"
+  },
+  "src/assets/images/QrNew.png": {
+    "file": "assets/QrNew-aLPqHEg1.png",
+    "src": "src/assets/images/QrNew.png"
+  },
+  "src/assets/images/Taj.png": {
+    "file": "assets/Taj-DJOCsJOJ.png",
+    "src": "src/assets/images/Taj.png"
+  },
+  "src/assets/images/Verify.png": {
+    "file": "assets/Verify-rmQoEPYl.png",
+    "src": "src/assets/images/Verify.png"
+  },
+  "src/assets/images/capsolFull.png": {
+    "file": "assets/capsolFull-CQQcwtby.png",
+    "src": "src/assets/images/capsolFull.png"
+  },
+  "src/assets/images/capsolLeft.png": {
+    "file": "assets/capsolLeft-DIwp6zZb.png",
+    "src": "src/assets/images/capsolLeft.png"
+  },
+  "src/assets/images/capsolRight.png": {
+    "file": "assets/capsolRight-Bd8oysww.png",
+    "src": "src/assets/images/capsolRight.png"
+  },
+  "src/assets/images/capsoleRight.png": {
+    "file": "assets/capsoleRight-CHzhHpGt.png",
+    "src": "src/assets/images/capsoleRight.png"
+  },
+  "src/assets/images/reload.png": {
+    "file": "assets/reload-P0wMFsEm.png",
+    "src": "src/assets/images/reload.png"
+  },
+  "src/main.js": {
+    "file": "assets/main-BhCIKxAN.js",
+    "name": "main",
+    "src": "src/main.js",
+    "isEntry": true,
+    "css": [
+      "assets/main-C2rriEM-.css"
+    ],
+    "assets": [
+      "assets/Logo-BCBOvwmj.png",
+      "assets/Header-BoPZeXXE.png",
+      "assets/Mask-ZxUH2MCM.png",
+      "assets/capsolLeft-DIwp6zZb.png",
+      "assets/InputField-Bah0LwCQ.png",
+      "assets/capsolRight-Bd8oysww.png",
+      "assets/capsoleRight-CHzhHpGt.png",
+      "assets/Mask2-DEaNDhWL.png",
+      "assets/QrNew-aLPqHEg1.png",
+      "assets/capsolFull-CQQcwtby.png",
+      "assets/LogoWhite-o_kTWGci.png",
+      "assets/Frame 15-BmqwzmJW.png",
+      "assets/Frame 16-C7I4zQBj.png",
+      "assets/Frame 17-BuKcds7U.png",
+      "assets/Frame 18-LLrPyic4.png",
+      "assets/Frame 19-CgsKjhTR.png",
+      "assets/Group 34-C-DMRYkG.png",
+      "assets/Qoutation-C5IcbgnP.png",
+      "assets/Verify-rmQoEPYl.png",
+      "assets/Taj-DJOCsJOJ.png",
+      "assets/reload-P0wMFsEm.png",
+      "assets/Mont-Bold-wkVb6EZH.ttf",
+      "assets/Mont-Regular-DkehNPDO.ttf",
+      "assets/Mont-SemiBold-D4hJrQPU.ttf"
+    ]
+  }
+}
