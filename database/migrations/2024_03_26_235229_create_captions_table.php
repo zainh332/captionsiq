@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('captions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('image_id')->constrained()->onDelete('cascade');
+            $table->integer('image_id')->index();
             $table->string('caption_text');
-            $table->boolean('selected')->default(false);
+            $table->boolean('selected')->default(0);
             $table->timestamps();
         });
     }
