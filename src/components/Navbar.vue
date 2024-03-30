@@ -121,7 +121,6 @@ import SigninModal from "../components/signin.vue";
 const signInModal  = ref(false);
 const OpenSignInModal = (e) => {
   signInModal.value = true;
-  // signInModal.value = !signInModal.value;
 };
 </script>
 <style scoped>
