@@ -5,6 +5,7 @@ import profile from './views/profile.vue';
 import Support from './views/Support.vue';
 import Package from './views/Package.vue';
 import signin from './components/signin.vue';
+import ForgotPassword from './components/ForgotPassword.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,11 @@ const router = createRouter({
       path: '/signin',
       name: 'signin',
       component: signin
+    },
+    {
+      path: '/forgot-password',
+      name: 'forgotPassword',
+      component: ForgotPassword
     },
   ]
 })

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\LoginRegisterController;
 
 /*
@@ -20,6 +21,11 @@ Route::controller(LoginRegisterController::class)->group(function() {
     Route::post('/login', 'login');
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group( function () {
+
+    Route::post('/logout', [LoginRegisterController::class, 'logout']);
+
+    Route::get('/profile/{user_id}', [ProfileController::class, 'getProfile']);
+    Route::post('/profile', [ProfileController::class, 'update']);
+    
 });

@@ -14,6 +14,7 @@ class LoginRegisterController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:250',
+            'user_name' => 'required|string|max:50|unique:users,user_name',
             'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
             'password' => 'required|string|min:8|confirmed'
         ]);
@@ -28,6 +29,7 @@ class LoginRegisterController extends Controller
 
         $user = User::create([
             'name' => $request->name,
+            'user_name' => $request->user_name,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);

@@ -90,7 +90,10 @@
                       </form>
   
                       <div>
-                        <span class="relative flex justify-center px-6 text-sm font-medium leading-6 text-gray-900 bg-white"  @click="OpenSignUpModal">New here? Create an account</span>
+                        <span class="relative flex justify-center px-6 text-sm font-medium leading-6 text-gray-900 bg-white"  @click="OpenSignUpModal">New here? <a href="#" style="color: palevioletred; padding-left: 2%;"> Create an account</a></span>
+
+                        <span class="mt-2 relative flex justify-center px-6 text-sm font-medium leading-6 text-gray-900 bg-white"  @click="OpenForgotPasswordnModal">Forgot Password?</span>
+
                         <div class="relative mt-10">
                           <div class="absolute inset-0 flex items-center" aria-hidden="true">
                             <div class="w-full border-t border-gray-200" />
@@ -132,17 +135,22 @@
           </div>
         </div>
       </Dialog>
+      
     </TransitionRoot>
-    <SignUpModal :open="signUpModal"/>
+   
+    <ForgotPassword :open="forgotPassword"/>
+
   </template>
   
-  <script setup>
- import { ref , defineProps, reactive} from "vue";
+<script setup>
+ 
+  import { ref , defineProps, reactive} from "vue";
   import Logo from '@/assets/Logo.png'
   import axios from 'axios';
   import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
-//   import Swal from 'sweetalert2';
   import { useRouter } from 'vue-router'
+  import Swal from 'sweetalert2';
+  import ForgotPassword from "../components/ForgotPassword.vue";
 
   // Define props
   const props = defineProps({ open: Boolean });
@@ -153,48 +161,45 @@
     password: "",
   });
 
-  import SignUpModal from "../components/signup.vue";
 
-const signUpModal  = ref(false);
-const OpenSignUpModal = (e) => {
-  signUpModal.value = true;
+  const forgotPassword  = ref(false);
+const OpenForgotPasswordnModal = (e) => {
+  forgotPassword.value = true;
 };
 
-//   const submitForm = (event) => {
-//     event.preventDefault(); // Prevent default form submission (prevent reload page)
 
-//     axios.post('/api/login', values, {
-//       headers: {
-//         'X-CSRF-TOKEN': window.Laravel.csrfToken,
-//       }
-//     })
-//     .then((response) => {
-//       if (response.data.status === 'success') {
-//         Swal.fire({
-//           icon: 'success',
-//           title: 'Success!',
-//           text: response.data.msg,
-//         });
-//         // Reset form values
-//         for (let key in values) {
-//           values[key] = "";
-//         }
-//       } else {
-//         Swal.fire({
-//           icon: 'error',
-//           title: 'Error!',
-//           text: response.data.msg,
-//         });
-//       }
-//     })
-//     .catch((error) => {
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Error!',
-//         text: 'An error occurred while processing your request.',
-//       });
-//       console.error(error); // Log the error to the console for debugging
-//     });
-//   }
+// Method to submit the sign-in form
+  const submitForm = async () => {
+    event.preventDefault();
+    try {
+      const response = await axios.post('/api/login', {
+        email: values.email,
+        password: values.password
+      });
+
+   
+      // Handle successful sign-in response
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: response.data.message,
+        });
+
+        // Optionally, redirect the user after successful sign-in
+        router.push('/collection');
+      
+
+    } catch (error) {
+      // Handle sign-in error
+      Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: (error.response) ? error.response.data.message : 'An Error Occured',
+        });
+      console.log(error);
+    
+    }
+  };
+
 </script>
   
