@@ -101,7 +101,7 @@
         </a>     
     </div>
     </transition>
-    <SigninModal :open="signInModal"/>
+    <SigninModal :open="signInModal" @close="handleModalClose" />
 </template>
 <script setup>
 import Logo from "../assets/Logo.png";
@@ -120,7 +120,13 @@ import SigninModal from "../components/signin.vue";
 
 const signInModal  = ref(false);
 const OpenSignInModal = (e) => {
+    
   signInModal.value = true;
+  console.log(signInModal.value);
+};
+
+const handleModalClose = () => {
+  signInModal.value = false;
 };
 </script>
 <style scoped>

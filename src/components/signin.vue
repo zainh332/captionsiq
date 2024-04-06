@@ -1,6 +1,6 @@
 <template>
     <TransitionRoot as="template" :show="open">
-      <Dialog as="div" class="relative z-40" @close="open = false">
+      <Dialog as="div" class="relative z-40" @close="modalClose">
         <!-- Backgound blur -->
         <TransitionChild
           as="template"
@@ -38,12 +38,12 @@
   
                   <div class="mt-4 ">
                     <div class="">
-                      <form class="space-y-6" @submit="submitForm">
+                      <form class="space-y-6" @submit="onSubmit">
                         <div>
                           <label
                             for="email"
                             class="block text-sm font-medium leading-6 text-gray-900">
-                            Email address
+                            Email Address*
                           </label>
                           <div class="mt-2">
                             <input
@@ -51,18 +51,20 @@
                               name="email"
                               type="email"
                               autocomplete="email"
-                              required=""
-                              v-model="values.email"
+                              v-model="email"
+                              v-bind="emailAttrs"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
                             />
                           </div>
+                      
+                          <span v-if="errors.email" class="text-red-500">{{ errors.email }}</span>
                         </div>
   
                         <div>
                           <label
                             for="password"
                             class="block text-sm font-medium leading-6 text-gray-900">
-                            Password
+                            Password*
                             </label>
                           <div class="mt-2 mb-2">
                             <input
@@ -70,11 +72,12 @@
                               name="password"
                               type="password"
                               autocomplete="current-password"
-                              required=""
-                              v-model="values.password"
+                              v-model="password"
+                              v-bind="passwordAttrs"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                           </div>
+                          <span v-if="errors.password" class="text-red-500">{{ errors.password }}</span>
                         </div>
   
                         <div class="flex items-center justify-between">
@@ -144,33 +147,58 @@
   
 <script setup>
  
-  import { ref , defineProps, reactive} from "vue";
+  import { ref , defineProps,defineEmits} from "vue";
   import Logo from '@/assets/Logo.png'
   import axios from 'axios';
   import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
   import { useRouter } from 'vue-router'
   import Swal from 'sweetalert2';
   import ForgotPassword from "../components/ForgotPassword.vue";
+  import { useForm } from 'vee-validate';
+  import * as yup from 'yup';
 
   // Define props
   const props = defineProps({ open: Boolean });
 
-  // Reactive object to store form values
-  const values = reactive({
-    email: "",
-    password: "",
-  });
+  console.log(props);
 
+// Define emits
+const emits = defineEmits(['close']);
 
-  const forgotPassword  = ref(false);
-const OpenForgotPasswordnModal = (e) => {
-  forgotPassword.value = true;
+const modalClose = () => {
+
+  props.open = false;
+  // Emit the 'close' event
+  emits('close');
 };
 
 
-// Method to submit the sign-in form
-  const submitForm = async () => {
-    event.preventDefault();
+
+
+  const forgotPassword  = ref(false);
+  const OpenForgotPasswordnModal = (e) => {
+    forgotPassword.value = true;
+  };  
+
+const { errors, handleSubmit,defineField,resetForm } = useForm({
+  initialValues: {
+    email: '',
+    password: '',
+  },
+  validationSchema: yup.object({
+    email: yup.string().email().required().label('Email'),
+    password: yup.string().min(6).required().label('Password'),
+  }),
+});
+
+const [email, emailAttrs] = defineField('email');
+const [password, passwordAttrs] = defineField('password');
+
+  // const submitForm = handleSubmit((values) => {
+    const onSubmit = handleSubmit(async (values) => {
+  console.log(values); // send data to API
+  // reset the form and the field values to their initial values
+  
     try {
       const response = await axios.post('/api/login', {
         email: values.email,
@@ -199,7 +227,8 @@ const OpenForgotPasswordnModal = (e) => {
       console.log(error);
     
     }
-  };
+  resetForm();
+});
 
 </script>
   
