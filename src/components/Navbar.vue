@@ -122,7 +122,6 @@ const signInModal  = ref(false);
 const OpenSignInModal = (e) => {
     
   signInModal.value = true;
-  console.log(signInModal.value);
 };
 
 const handleModalClose = () => {

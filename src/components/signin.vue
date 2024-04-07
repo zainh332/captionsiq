@@ -53,6 +53,7 @@
                               autocomplete="email"
                               v-model="email"
                               v-bind="emailAttrs"
+                              autofocus="blur"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
                             />
                           </div>
@@ -140,63 +141,69 @@
       </Dialog>
       
     </TransitionRoot>
-   
-    <ForgotPassword :open="forgotPassword"/>
+    <SignUpModal :open="signUpModal"  @closeSignup="signUpModalClose"/>
+    <ForgotPassword :open="forgotPassword" @closeSignInModal="closeForgotPasswordnModal"/>
 
   </template>
   
 <script setup>
  
-  import { ref , defineProps,defineEmits} from "vue";
+  import { ref , defineProps,defineEmits,onMounted} from "vue";
   import Logo from '@/assets/Logo.png'
   import axios from 'axios';
   import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
   import { useRouter } from 'vue-router'
   import Swal from 'sweetalert2';
   import ForgotPassword from "../components/ForgotPassword.vue";
+  import SignUpModal from "../components/signup.vue";
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
 
   // Define props
   const props = defineProps({ open: Boolean });
 
-  console.log(props);
+  // onMounted(() => {
+  //   const inputField = document.getElementById('email');
+  //   inputField.blur(); // Remove focus from input field
+  // });
 
-// Define emits
-const emits = defineEmits(['close']);
+  const signUpModal  = ref(false);
+  const OpenSignUpModal = (e) => {
+    modalClose();
+    signUpModal.value = true;
+  };
 
-const modalClose = () => {
-
-  props.open = false;
-  // Emit the 'close' event
-  emits('close');
+  const signUpModalClose = () => {  //closes the signup modal when clicked outside
+    signUpModal.value = false;
 };
-
-
-
 
   const forgotPassword  = ref(false);
   const OpenForgotPasswordnModal = (e) => {
+    modalClose();
     forgotPassword.value = true;
-  };  
+  };
+  
+  const closeForgotPasswordnModal = (e) => {  //closes the forgot password modal when clicked outside
+    forgotPassword.value = false;
+  };
 
-const { errors, handleSubmit,defineField,resetForm } = useForm({
-  initialValues: {
-    email: '',
-    password: '',
-  },
-  validationSchema: yup.object({
-    email: yup.string().email().required().label('Email'),
-    password: yup.string().min(6).required().label('Password'),
-  }),
-});
+  const { errors, handleSubmit,defineField,resetForm } = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: yup.object({
+      email: yup.string().email().required().label('Email'),
+      password: yup.string().required().label('Password'),
+    }),
+  });
 
-const [email, emailAttrs] = defineField('email');
-const [password, passwordAttrs] = defineField('password');
+  const [email, emailAttrs] = defineField('email');
+  const [password, passwordAttrs] = defineField('password');
 
   // const submitForm = handleSubmit((values) => {
     const onSubmit = handleSubmit(async (values) => {
-  console.log(values); // send data to API
+    console.log(values); // send data to API
   // reset the form and the field values to their initial values
   
     try {
@@ -204,7 +211,7 @@ const [password, passwordAttrs] = defineField('password');
         email: values.email,
         password: values.password
       });
-
+      console.log(response);
    
       // Handle successful sign-in response
         Swal.fire({
@@ -213,11 +220,13 @@ const [password, passwordAttrs] = defineField('password');
           text: response.data.message,
         });
 
+        modalClose();
         // Optionally, redirect the user after successful sign-in
-        router.push('/collection');
+        // router.push('/collection');
       
 
     } catch (error) {
+      console.log(error);
       // Handle sign-in error
       Swal.fire({
           icon: 'error',
@@ -228,7 +237,18 @@ const [password, passwordAttrs] = defineField('password');
     
     }
   resetForm();
-});
+    });
+
+// Define emits
+const emits = defineEmits(['close']);
+
+const modalClose = () => {
+
+  props.open = false;
+  // Emit the 'close' event
+  emits('close');
+  resetForm();
+};
 
 </script>
   

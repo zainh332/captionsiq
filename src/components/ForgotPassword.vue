@@ -1,7 +1,7 @@
 
 <template>
     <TransitionRoot as="template" :show="open">
-      <Dialog as="div" class="relative z-40" @close="open = false">
+      <Dialog as="div" class="relative z-40" @close="modalClose">
         <!-- Backgound blur -->
         <TransitionChild
           as="template"
@@ -39,13 +39,13 @@
   
                   <div class="mt-4 ">
                     <div class="">
-                      <form class="space-y-6" @submit="submitForm">
+                      <form class="space-y-6" @submit="onSubmit">
                     
                         <div>
                           <label
                             for="email"
                             class="block text-sm font-medium leading-6 text-gray-900">
-                            Email address
+                            Email Address*
                           </label>
                           <div class="mt-2">
                             <input
@@ -53,11 +53,12 @@
                               name="email"
                               type="email"
                               autocomplete="email"
-                              required=""
-                              v-model="values.email"
+                              v-model="email"
+                              v-bind = "emailAttrs"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
                             />
                           </div>
+                          <span v-if="errors.email" class="text-red-500">{{ errors.email }}</span>
                         </div>
   
                         <div>
@@ -80,52 +81,105 @@
   import Logo from '@/assets/Logo.png'
   import axios from 'axios';
   import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
-//   import Swal from 'sweetalert2';
-  import { useRouter } from 'vue-router'
+  import { useForm } from 'vee-validate';
+  import * as yup from 'yup';
+  import Swal from 'sweetalert2';
 
   // Define props
   const props = defineProps({ open: Boolean });
 
-  // Reactive object to store form values
-  const values = reactive({
-    email: "",
-  });
 
-    const submitForm = (event) => {
-    event.preventDefault(); // Prevent default form submission (prevent reload page)
+// Define emits
+  const emits = defineEmits(['closeSignInModal']);
 
-    axios.post('/api/signup', values, {
-      headers: {
-        'X-CSRF-TOKEN': window.Laravel.csrfToken,
-      }
-    })
-    .then((response) => {
-      if (response.data.status === 'success') {
+  const modalClose = () => {
+    props.open = false;
+    // Emit the 'close' event
+    emits('closeSignInModal');
+    // resetForm();
+  };
+
+
+  const { errors, handleSubmit,defineField,resetForm } = useForm({
+      initialValues: {
+        email: '',
+      },
+      validationSchema: yup.object({
+        email: yup.string().email().required().label('Email'),
+      }),
+    });
+
+  const [email, emailAttrs] = defineField('email');
+
+
+  //   const submitForm = (event) => {
+  //   event.preventDefault(); // Prevent default form submission (prevent reload page)
+
+  //   axios.post('/api/signup', values, {
+  //     headers: {
+  //       'X-CSRF-TOKEN': window.Laravel.csrfToken,
+  //     }
+  //   })
+  //   .then((response) => {
+  //     if (response.data.status === 'success') {
+  //       Swal.fire({
+  //         icon: 'success',
+  //         title: 'Success!',
+  //         text: response.data.msg,
+  //       });
+  //       // Reset form values
+  //       for (let key in values) {
+  //         values[key] = "";
+  //       }
+  //     } else {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error!',
+  //         text: response.data.msg,
+  //       });
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Error!',
+  //       text: 'An error occurred while processing your request.',
+  //     });
+  //     console.error(error); // Log the error to the console for debugging
+  //   });
+  // }
+
+  const onSubmit = handleSubmit(async (values) => {
+    console.log(values); // send data to API
+    try {
+      const response = await axios.post('/api/login', {
+        email: values.email,
+        //password: values.password
+      });
+
+   
+      // Handle successful sign-in response
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: response.data.msg,
+          text: response.data.message,
         });
-        // Reset form values
-        for (let key in values) {
-          values[key] = "";
-        }
-      } else {
-        Swal.fire({
+
+        // Optionally, redirect the user after successful sign-in
+        router.push('/collection');
+      
+
+    } catch (error) {
+      // Handle sign-in error
+      Swal.fire({
           icon: 'error',
           title: 'Error!',
-          text: response.data.msg,
+          text: (error.response) ? error.response.data.message : 'An Error Occured',
         });
-      }
-    })
-    .catch((error) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'An error occurred while processing your request.',
-      });
-      console.error(error); // Log the error to the console for debugging
-    });
-  }
+      console.log(error);
+    
+    }
+    resetForm();
+  });
 </script>
   
