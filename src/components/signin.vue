@@ -162,11 +162,6 @@
   // Define props
   const props = defineProps({ open: Boolean });
 
-  // onMounted(() => {
-  //   const inputField = document.getElementById('email');
-  //   inputField.blur(); // Remove focus from input field
-  // });
-
   const signUpModal  = ref(false);
   const OpenSignUpModal = (e) => {
     modalClose();
@@ -201,11 +196,10 @@
   const [email, emailAttrs] = defineField('email');
   const [password, passwordAttrs] = defineField('password');
 
-  // const submitForm = handleSubmit((values) => {
-    const onSubmit = handleSubmit(async (values) => {
+
+  const onSubmit = handleSubmit(async (values) => {
     console.log(values); // send data to API
-  // reset the form and the field values to their initial values
-  
+
     try {
       const response = await axios.post('/api/login', {
         email: values.email,
@@ -221,6 +215,7 @@
         });
 
         modalClose();
+        localStorage.setItem('token',response.data.data.token);
         // Optionally, redirect the user after successful sign-in
         // router.push('/collection');
       
@@ -236,19 +231,19 @@
       console.log(error);
     
     }
-  resetForm();
-    });
+    resetForm();
+  });
 
-// Define emits
-const emits = defineEmits(['close']);
+  // Define emits
+  const emits = defineEmits(['close']);
 
-const modalClose = () => {
+  const modalClose = () => {  
 
-  props.open = false;
-  // Emit the 'close' event
-  emits('close');
-  resetForm();
-};
+    props.open = false;
+    // Emit the 'close' event
+    emits('close');
+    resetForm();
+  };
 
 </script>
   
