@@ -158,6 +158,10 @@
   import SignUpModal from "../components/signup.vue";
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
+  import { useStore } from 'vuex';
+
+  const store = useStore();
+  const router = useRouter();
 
   // Define props
   const props = defineProps({ open: Boolean });
@@ -200,22 +204,25 @@
   const onSubmit = handleSubmit(async (values) => {
     console.log(values); // send data to API
 
-    try {
-      const response = await axios.post('/api/login', {
-        email: values.email,
-        password: values.password
-      });
-      console.log(response);
-   
+      const User = new FormData();
+      User.append("email", values.email);
+      User.append("password", values.password);
+    
+      try {
+     
+     
+      store.dispatch('LogIn',User);
+
       // Handle successful sign-in response
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: response.data.message,
+          text: 'Login Successfully',
         });
 
         modalClose();
-        localStorage.setItem('token',response.data.data.token);
+//router.push('/')
+        //localStorage.setItem('token',response.data.data.token);
         // Optionally, redirect the user after successful sign-in
         // router.push('/collection');
       

@@ -6,14 +6,14 @@
     </router-link>
     </div>
     <p class="text-white font-bold">Quick Links</p>
-    <div v-if="!login" class="hidden lg:flex items-center justify-center gap-10">
+    <div class="hidden lg:flex items-center justify-center gap-10">
         <a href="/collection">
            <div class="flex items-center gap-1 border-b-2 border-transparent hover:border-[#EC047A]">
             Collection
                 <IconArrow />   
            </div>
         </a> 
-        <a href="/profile">
+        <a  v-if="login" href="/profile">
            <div class="flex items-center gap-1 border-b-2 border-transparent hover:border-[#EC047A]">
             Profile
                 <IconArrow />   
@@ -29,7 +29,7 @@
             Packages  
            </div>
         </a> 
-        <a href="">
+        <a href="/contact_us">
            <div class="flex items-center gap-1 border-b-2 border-transparent hover:border-[#EC047A]">
                 Support Center  
            </div>
@@ -45,17 +45,22 @@
         <div class="flex items-center gap-2">
             <div class="bg-linear rounded-full p-0.5 w-fit ">
 
-<button class="group rounded-full bg-white hover:bg-transparent flex items-center"
+<button v-if="!login" class="group rounded-full bg-white hover:bg-transparent flex items-center"
      @click="OpenSignInModal">
-        <span class="linear-btn font-medium group-hover:text-white sm:py-2 px-3 sm:px-5 flex items-center gap-3 text-sm"> <IconProfile class="hidden sm:block" />Log in</span>
+        <span class="linear-btn font-medium group-hover:text-white sm:py-2 px-3 sm:px-5 flex items-center gap-3 text-sm"> <IconProfile class="hidden sm:block" />Log in {{ login }}</span>
+</button>
+<button v-else  class="group rounded-full bg-white hover:bg-transparent flex items-center"
+    @click="logout">
+        <span class="linear-btn font-medium group-hover:text-white sm:py-2 px-3 sm:px-5 flex items-center gap-3 text-sm"> <IconProfile class="hidden sm:block" />Log Out</span>
 </button>
 
 </div>
 <button v-if="!login" @click="isMobileNav()" class="block lg:hidden bg-linear text-white p-1 rounded-md">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
-<path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
-</svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+    <path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+    </svg>
 </button>
+
         </div>
     </div>
     <div v-if="login" class="flex items-center justify-between gap-3">
@@ -108,10 +113,23 @@ import Logo from "../assets/Logo.png";
 import IconArrow from "../components/icons/arrowDown.vue";
 import IconGlobal from "../components/icons/IconGlobal.vue";
 import IconProfile from "../components/icons/IconProfile.vue";
-import { defineProps , ref } from "vue";
-const props = defineProps({
-    login: Boolean
-});
+import { defineProps , ref ,computed} from "vue";
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+// const props = defineProps({
+//     login: Boolean
+// });
+
+const store = useStore();
+const router = useRouter();
+const login = computed(() => store.getters.isAuthenticated);
+
+const logout = async () => {
+  await store.dispatch('LogOut');
+  router.push('/');
+};
+
+
 const mobileNav = ref(false);
 const isMobileNav = () =>{
 mobileNav.value = !mobileNav.value;
