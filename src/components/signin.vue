@@ -210,9 +210,7 @@
     
       try {
      
-     
-      store.dispatch('LogIn',User);
-
+        await store.dispatch('LogIn', User);
       // Handle successful sign-in response
         Swal.fire({
           icon: 'success',
@@ -221,21 +219,14 @@
         });
 
         modalClose();
-//router.push('/')
-        //localStorage.setItem('token',response.data.data.token);
-        // Optionally, redirect the user after successful sign-in
-        // router.push('/collection');
-      
 
     } catch (error) {
-      console.log(error);
       // Handle sign-in error
       Swal.fire({
           icon: 'error',
           title: 'Error!',
-          text: (error.response) ? error.response.data.message : 'An Error Occured',
+          text: error,
         });
-      console.log(error);
     
     }
     resetForm();

@@ -47,11 +47,7 @@
 
 <button v-if="!login" class="group rounded-full bg-white hover:bg-transparent flex items-center"
      @click="OpenSignInModal">
-        <span class="linear-btn font-medium group-hover:text-white sm:py-2 px-3 sm:px-5 flex items-center gap-3 text-sm"> <IconProfile class="hidden sm:block" />Log in {{ login }}</span>
-</button>
-<button v-else  class="group rounded-full bg-white hover:bg-transparent flex items-center"
-    @click="logout">
-        <span class="linear-btn font-medium group-hover:text-white sm:py-2 px-3 sm:px-5 flex items-center gap-3 text-sm"> <IconProfile class="hidden sm:block" />Log Out</span>
+        <span class="linear-btn font-medium group-hover:text-white sm:py-2 px-3 sm:px-5 flex items-center gap-3 text-sm"> <IconProfile class="hidden sm:block" />Log in </span>
 </button>
 
 </div>
@@ -63,7 +59,7 @@
 
         </div>
     </div>
-    <div v-if="login" class="flex items-center justify-between gap-3">
+    <!-- <div v-if="login" class="flex items-center justify-between gap-3">
         <a href="">
             <div class="flex items-center gap-1">
                 <img class="w-12 h-12 object-cover rounded-full" src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNxdWFyZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="">
@@ -71,9 +67,29 @@
         </a>
         <div class="">
             <p class="text-[#EC047A]">Welcome</p>
-            <p class="text-black font-medium">Zain Haider</p>
+            <p class="text-black font-medium">{{ store.getters.StateUser.name }}</p>
         </div>
+    </div> -->
+
+    <div class="relative" v-if="login" @click="toggleDropdown">
+  <a href="#">
+    <div class="flex items-center gap-3"> <!-- Increased gap to create space between image and text -->
+      <img class="w-12 h-12 object-cover rounded-full" src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNxdWFyZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="">
+      <div>
+        <p class="text-[#EC047A]">Welcome</p>
+        <p class="text-black font-medium">{{ store.getters.StateUser.name }}</p>
+      </div>
     </div>
+  </a>
+  <div class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg" v-show="isDropdownOpen">
+    <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">Profile</a>
+    <a href="#" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">Settings</a>
+    <div class="border-t"></div> -->
+    <a href="#" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100" @click.prevent="logout">Logout</a>
+  </div>
+</div>
+
+   
 </nav>
 <transition name="fade" appear>
     <div v-if="mobileNav" class="flex lg:hidden flex-col items-start justify-start gap-5 px-8">
@@ -123,6 +139,11 @@ import { useRouter } from 'vue-router';
 const store = useStore();
 const router = useRouter();
 const login = computed(() => store.getters.isAuthenticated);
+const isDropdownOpen = ref(false);
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
 
 const logout = async () => {
   await store.dispatch('LogOut');

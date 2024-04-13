@@ -16,15 +16,17 @@ class LoginRegisterController extends Controller
             'name' => 'required|string|max:250',
             'user_name' => 'required|string|max:50|unique:users,user_name',
             'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
-            'password' => 'required|string|min:8|confirmed'
+            'password' => 'required|string|min:8'
         ]);
 
         if($validate->fails()){
-            return response()->json([
+            $response = [
                 'status' => 'failed',
                 'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-            ], 403);
+                'errors' => $validate->errors(),
+            ];
+            return response()->json($response, 403);
+            //throw new \Illuminate\Validation\ValidationException($validate);
         }
 
         $user = User::create([

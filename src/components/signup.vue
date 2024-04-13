@@ -127,12 +127,12 @@
   import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
-
+  import Swal from 'sweetalert2';
   // Define props
   const props = defineProps({ open: Boolean });
 
 
-  const { errors, handleSubmit,defineField,resetForm } = useForm({
+  const { errors, handleSubmit,defineField,resetForm,setFieldError, setErrors } = useForm({
     initialValues: {
       username: '',
       email: '',
@@ -161,38 +161,48 @@ const modalClose = () => {
   // resetForm();
 };
 
-const onSubmit = handleSubmit(async (values) => {
-    console.log(values); // send data to API 
-    try {
-      const response = await axios.post('/api/signup', {
-        username: values.username,
-        email: values.email,
-        password: values.password
-      });
+// const onSubmit = handleSubmit(async (values) => {
 
-   
-      // Handle successful sign-in response
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: response.data.message,
-        });
+//       const response = await axios.post('/register', {
+//         username: values.username,
+//         email: values.email,
+//         password: values.password
+//       });
+//         if (!response.errors) {
+//           Swal.fire({
+//           icon: 'success',
+//           title: 'Success!',
+//           text: response.data.message,
+//         }); 
+        
+//         resetForm();
+//         return;
+//       }
+//       // set single field error
+//     if (response.errors.email) {
+//       setFieldError('email', response.errors.email);
+//     }
+//     // set multiple errors, assuming the keys are the names of the fields
+//     // and the key's value is the error message
+//     setErrors(response.errors);
+  
+// });
 
-        // Optionally, redirect the user after successful sign-in
-        router.push('/collection');
-      
-
-    } catch (error) {
-      // Handle sign-in error
-      Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: (error.response) ? error.response.data.message : 'An Error Occured',
-        });
-      console.log(error);
-    
-    }
-  resetForm();
+const onSubmit = handleSubmit(async values => {
+  // Send data to the API
+  const response = await axios.post('/register', values);
+  console.log(response,errors);
+  // all good
+  if (!response.errors) {
+    return;
+  }
+  // set single field error
+  if (response.errors.email) {
+    setFieldError('email', response.errors.email);
+  }
+  // set multiple errors, assuming the keys are the names of the fields
+  // and the key's value is the error message
+  setErrors(response.errors);
 });
 </script>
   

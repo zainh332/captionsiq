@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const state = {
-  user: null,
+  user: [],
   posts: null,
 };
 
@@ -11,36 +11,44 @@ const getters = {
 };
 
 const actions = {
-  async Register({dispatch}, form) {
-    await axios.post('register', form)
-    let UserForm = new FormData()
-    UserForm.append('username', form.username)
-    UserForm.append('password', form.password)
-    await dispatch('LogIn', UserForm)
+  async Register({ dispatch }, form) {
+    await axios.post('register', form);
+    await dispatch('LogIn', form); // Pass the entire form object
   },
 
-  async LogIn({commit}, user) {
-    await axios.post("login", user);
-    await commit("setUser", user.get("name"));
+  async LogIn({ commit }, user) {
+    try{
+        const response = await axios.post("login", user);
+        if (response && response.status == 200) {
+          const user_data = response.data.data.user; // Assuming the name is returned in the response
+          commit("setUser", user_data); // Pass the name to the mutation
+        } else {
+          // Handle the case when the response or required data is missing
+          commit("setUser", null);
+          throw new Error("Invalid Credentials");
+        }
+    
+    }
+    catch(error)
+    {
+        throw error;
+    }
+   
   },
 
   async LogOut({ commit }) {
-    let user = null;
-    commit("logout", user);
+    commit("logout"); // No need to pass user since you're setting it to null directly
   },
 };
 
 const mutations = {
   setUser(state, name) {
-    console.log('state',state,'name',name);
     state.user = name;
   },
-  logout(state, user) {
-    state.user = user;
+  logout(state) {
+    state.user = null;
   },
 };
-
-
 
 export default {
   state,
