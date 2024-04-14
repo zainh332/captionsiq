@@ -36,8 +36,6 @@ Route::controller(LoginRegisterController::class)->group(function() {
 Route::middleware('auth:sanctum')->group( function () {
 
     Route::post('/logout', [LoginRegisterController::class, 'logout']);
-
-    Route::get('/profile/{user_id}', [ProfileController::class, 'getProfile']);
     Route::post('/profile', [ProfileController::class, 'update']);
     
 });

@@ -20,7 +20,7 @@ const actions = {
     try{
         const response = await axios.post("login", user);
         if (response && response.status == 200) {
-          const user_data = response.data.data.user; // Assuming the name is returned in the response
+          const user_data = response.data.data; // Assuming the name is returned in the response
           commit("setUser", user_data); // Pass the name to the mutation
         } else {
           // Handle the case when the response or required data is missing
@@ -43,6 +43,7 @@ const actions = {
 
 const mutations = {
   setUser(state, name) {
+    console.log('state',state,'name',name);
     state.user = name;
   },
   logout(state) {
