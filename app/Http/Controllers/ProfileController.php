@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -51,18 +52,21 @@ class ProfileController extends Controller
         ]);
 
         if($request->hasFile('image')){
-          $file = $request->file('image');
-          $filename = $file->getClientOriginalName();
-          Storage::disk('local')->put('images/'.'/'.$fileName, 'public');
-          $user->image = $path;
-          $user->save();
+    
+            $image      = $request->file('image');
+            $imageName  = time() . '.' . $image->getClientOriginalExtension();
+            $path       = "images/".$imageName;
+            Storage::disk('public')->put($path, file_get_contents($image));  
+            $path = Storage::disk('public')->url($path);    
+              
+            $user->image = $path;
+            $user->save();
         }
 
         $token = $request->header('Authorization');
 
-        // Token might be prefixed with 'Bearer ', so remove it if necessary
         if (Str::startsWith($token, 'Bearer ')) {
-            $token = Str::substr($token, 7); // Remove 'Bearer ' prefix
+            $token = Str::substr($token, 7); 
         }
 
         $data['token'] = $token;

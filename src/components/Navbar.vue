@@ -3,6 +3,8 @@
     <div class="flex items-center justify-between">
         <router-link to="/">
       <img class="w-32 sm:w-auto" :src="Logo" alt="">
+    
+                    
     </router-link>
     </div>
     <p class="text-white font-bold">Quick Links</p>
@@ -74,7 +76,13 @@
     <div class="relative" v-if="login" @click="toggleDropdown">
   <a href="#">
     <div class="flex items-center gap-3"> <!-- Increased gap to create space between image and text -->
-      <img class="w-12 h-12 object-cover rounded-full" src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNxdWFyZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="">
+      <!-- <img class="w-12 h-12 object-cover rounded-full" src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNxdWFyZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt=""> -->
+      <img v-if="store.getters.StateUser.user.image == null" class="w-12 h-12 object-cover rounded-full"
+                            src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNxdWFyZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
+                            alt="">
+                            <img v-else class="w-12 h-12 object-cover rounded-full"
+                            :src="store.getters.StateUser.user.image"
+                            alt="">
       <div>
         <p class="text-[#EC047A]">Welcome</p>
         <p class="text-black font-medium">{{ store.getters.StateUser.user.name }}</p>
