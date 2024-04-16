@@ -23,9 +23,9 @@ class LoginRegisterController extends Controller
             $response = [
                 'status' => 'failed',
                 'message' => 'Validation Error!',
-                'errors' => $validate->errors(),
+                'data' => $validate->errors(),
             ];
-            return response()->json($response, 403);
+            return response()->json($response, 400);
             //throw new \Illuminate\Validation\ValidationException($validate);
         }
 
@@ -36,7 +36,7 @@ class LoginRegisterController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
-        $data['token'] = $user->createToken($request->email)->plainTextToken;
+        // $data['token'] = $user->createToken($request->email)->plainTextToken;
         $data['user'] = $user;
 
         $response = [

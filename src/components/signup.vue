@@ -98,12 +98,12 @@
                           <span v-if="errors.password" class="text-red-500">{{ errors.password }}</span>
                         </div>
   
-                        <div class="flex items-center justify-between">
+                        <!-- <div class="flex items-center justify-between">
                           <div class="flex items-center">
                             <input id="remember-me" name="remember-me" type="checkbox" class="w-3 h-3 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600" style="margin-right: 5px;"/>
                             <label for="remember-me" class="block ml-3 text-sm leading-6 text-gray-900"> Remember me</label>
                           </div>
-                        </div>
+                        </div> -->
   
                         <div>
                           <button type="submit" class="modal-btn">Sign Up</button>
@@ -161,48 +161,77 @@ const modalClose = () => {
   // resetForm();
 };
 
-// const onSubmit = handleSubmit(async (values) => {
+const handleErrorResponse = (error) => {
+  let errorResponse;
+  if(error.response && error.response.data) {
+    // I expect the API to handle error responses in valid format
+    errorResponse = error.response.data;
+    // JSON stringify if you need the json and use it later
+  } else if(error.request) {
+    // TO Handle the default error response for Network failure or 404 etc.,
+    errorResponse = error.request.message || error.request.statusText;
+  } else {
+    errorResponse = error.message;
+  }
+  throw new Error(errorResponse);
+}
 
-//       const response = await axios.post('/register', {
-//         username: values.username,
-//         email: values.email,
-//         password: values.password
-//       });
-//         if (!response.errors) {
-//           Swal.fire({
-//           icon: 'success',
-//           title: 'Success!',
-//           text: response.data.message,
-//         }); 
-        
-//         resetForm();
-//         return;
-//       }
-//       // set single field error
-//     if (response.errors.email) {
-//       setFieldError('email', response.errors.email);
+// const onSubmit = handleSubmit(async values => {
+//   try {
+//     const response = await axios.post('/register', values);
+//     console.log(response);
+
+//     if (response.data && response.data.message === 'Validation Error!') {
+//       // Set validation errors
+//       setErrors(response.data.errors);
+//     } else {
+//       throw new Error('Registration failed');
 //     }
-//     // set multiple errors, assuming the keys are the names of the fields
-//     // and the key's value is the error message
-//     setErrors(response.errors);
-  
+//   } catch (error) {
+//     console.error(error.message);
+//     // Set generic error message
+//     setFieldError('email', 'Registration failed'); // Example
+//   }
 // });
 
-const onSubmit = handleSubmit(async values => {
-  // Send data to the API
-  const response = await axios.post('/register', values);
-  console.log(response,errors);
-  // all good
-  if (!response.errors) {
-    return;
+async function onSubmit(values) {
+  try {
+    const response = await axios.post('http://127.0.0.1:8000/api/register', values);
+    console.log(response);
+
+    if (response.data && response.data.message === 'Validation Error!') {
+      // Set validation errors
+      setErrors(response.data.errors);
+    } else {
+      throw new Error('Registration failed');
+    }
+  } catch (error) {
+    console.error(error.message);
+    // Set generic error message
+    setFieldError('email', 'Registration failed'); // Example
   }
-  // set single field error
-  if (response.errors.email) {
-    setFieldError('email', response.errors.email);
-  }
-  // set multiple errors, assuming the keys are the names of the fields
-  // and the key's value is the error message
-  setErrors(response.errors);
-});
+}
+
+
+
+
+// const { handleSubmit, setFieldError, setErrors } = useForm();
+// const onSubmit = handleSubmit(async values => {
+//   // Send data to the API
+//   const response = await axios.post('/register', values);
+//   console.log(response,response.status,response.data);
+//   // all good
+//   if (!response.errors) {
+//     return;
+//   }
+//   // set single field error
+//   if (response.errors.email) {
+//     setFieldError('email', response.errors.email);
+//   }
+//   // set multiple errors, assuming the keys are the names of the fields
+//   // and the key's value is the error message
+//   setErrors(response.errors);
+// });
+
 </script>
   

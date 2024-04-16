@@ -81,12 +81,12 @@
                           <span v-if="errors.password" class="text-red-500">{{ errors.password }}</span>
                         </div>
   
-                        <div class="flex items-center justify-between">
+                        <!-- <div class="flex items-center justify-between">
                           <div class="flex items-center">
                             <input id="remember-me" name="remember-me" type="checkbox" class="w-3 h-3 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600" style="margin-right: 5px;"/>
                             <label for="remember-me" class="block ml-3 text-sm leading-6 text-gray-900"> Remember me</label>
                           </div>
-                        </div>
+                        </div> -->
   
                         <div>
                           <button type="submit" class="modal-btn">Sign in</button>
