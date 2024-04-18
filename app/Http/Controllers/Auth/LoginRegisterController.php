@@ -12,9 +12,10 @@ class LoginRegisterController extends Controller
 {
     public function register(Request $request)
     {
+      
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:250',
-            'user_name' => 'required|string|max:50|unique:users,user_name',
+            'username' => 'required|string|max:50|unique:users,user_name',
             'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
             'password' => 'required|string|min:8'
         ]);
@@ -23,10 +24,11 @@ class LoginRegisterController extends Controller
             $response = [
                 'status' => 'failed',
                 'message' => 'Validation Error!',
-                'data' => $validate->errors(),
+                'error' => $validate->errors(),
             ];
             return response()->json($response, 400);
             //throw new \Illuminate\Validation\ValidationException($validate);
+            //dd($request->all());
         }
 
         $user = User::create([
@@ -45,7 +47,7 @@ class LoginRegisterController extends Controller
             'data' => $data,
         ];
 
-        return response()->json($response, 201);
+        return response()->json( $response, 201);
     }
 
     /**

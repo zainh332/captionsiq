@@ -41,15 +41,34 @@
                       <form class="space-y-6" @submit="onSubmit">
                         <div>
                           <label
-                            for="username"
+                            for="name"
+                            class="block text-sm font-medium leading-6 text-gray-900">
+                            Name*
+                          </label>
+                          <div class="mt-2">
+                            <input
+                              id="name"
+                              name="name"
+                              type="text"
+                              autocomplete="name"
+                              v-model="name"
+                              v-bind="nameAttrs"
+                              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
+                            />
+                          </div>
+                          <span v-if="errors.name" class="text-red-500">{{ errors.name }}</span>
+                        </div>
+                        <div>
+                          <label
+                            for="name"
                             class="block text-sm font-medium leading-6 text-gray-900">
                             Username*
                           </label>
                           <div class="mt-2">
                             <input
-                              id="username"
-                              name="username"
-                              type="username"
+                              id="name"
+                              name="name"
+                              type="text"
                               autocomplete="username"
                               v-model="username"
                               v-bind="usernameAttrs"
@@ -120,7 +139,7 @@
     </TransitionRoot>
   </template>
   
-  <script setup>
+<script setup>
  import { ref , defineProps, defineEmits} from "vue";
   import Logo from '@/assets/Logo.png'
   import axios from 'axios';
@@ -134,11 +153,13 @@
 
   const { errors, handleSubmit,defineField,resetForm,setFieldError, setErrors } = useForm({
     initialValues: {
+      name: '',
       username: '',
       email: '',
       password: '',
     },
     validationSchema: yup.object({
+      name: yup.string().required().label('Name'),
       username: yup.string().required().label('Username'),
       email: yup.string().email().required().label('Email'),
       password: yup.string().min(6).required().label('Password'),
@@ -148,6 +169,7 @@
   const [email, emailAttrs] = defineField('email');
   const [password, passwordAttrs] = defineField('password');
   const [username, usernameAttrs] = defineField('username');
+  const [name, nameAttrs] = defineField('name');
 
 
 // Define emits
@@ -161,77 +183,36 @@ const modalClose = () => {
   // resetForm();
 };
 
-const handleErrorResponse = (error) => {
-  let errorResponse;
-  if(error.response && error.response.data) {
-    // I expect the API to handle error responses in valid format
-    errorResponse = error.response.data;
-    // JSON stringify if you need the json and use it later
-  } else if(error.request) {
-    // TO Handle the default error response for Network failure or 404 etc.,
-    errorResponse = error.request.message || error.request.statusText;
-  } else {
-    errorResponse = error.message;
-  }
-  throw new Error(errorResponse);
-}
 
-// const onSubmit = handleSubmit(async values => {
-//   try {
-//     const response = await axios.post('/register', values);
-//     console.log(response);
+const onSubmit = handleSubmit( async(values,actions) => {
+   console.log(values);
 
-//     if (response.data && response.data.message === 'Validation Error!') {
-//       // Set validation errors
-//       setErrors(response.data.errors);
-//     } else {
-//       throw new Error('Registration failed');
-//     }
-//   } catch (error) {
-//     console.error(error.message);
-//     // Set generic error message
-//     setFieldError('email', 'Registration failed'); // Example
-//   }
-// });
 
-async function onSubmit(values) {
-  try {
-    const response = await axios.post('http://127.0.0.1:8000/api/register', values);
-    console.log(response);
-
-    if (response.data && response.data.message === 'Validation Error!') {
-      // Set validation errors
-      setErrors(response.data.errors);
-    } else {
-      throw new Error('Registration failed');
+  await axios.post('/register', values, { validateStatus: function (status) {
+          return status > 300; // Reject only if the status code is greater than or equal to 300
+        }})
+    .then( 
+   (response) => { 
+      if(response.data.status == 'failed'){
+       
+        actions.setErrors(response.data.error);
+      
+      }
+      else{
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Registeration Completed Successfully',
+        });
+      }
+   },
+   (error) => {
+      console.log(error);
     }
-  } catch (error) {
-    console.error(error.message);
-    // Set generic error message
-    setFieldError('email', 'Registration failed'); // Example
-  }
-}
+   );
+ 
 
-
-
-
-// const { handleSubmit, setFieldError, setErrors } = useForm();
-// const onSubmit = handleSubmit(async values => {
-//   // Send data to the API
-//   const response = await axios.post('/register', values);
-//   console.log(response,response.status,response.data);
-//   // all good
-//   if (!response.errors) {
-//     return;
-//   }
-//   // set single field error
-//   if (response.errors.email) {
-//     setFieldError('email', response.errors.email);
-//   }
-//   // set multiple errors, assuming the keys are the names of the fields
-//   // and the key's value is the error message
-//   setErrors(response.errors);
-// });
+}); 
 
 </script>
   
