@@ -162,7 +162,7 @@
       name: yup.string().required().label('Name'),
       username: yup.string().required().label('Username'),
       email: yup.string().email().required().label('Email'),
-      password: yup.string().min(6).required().label('Password'),
+      password: yup.string().min(8).required().label('Password'),
     }),
   });
 
@@ -187,27 +187,27 @@ const modalClose = () => {
 const onSubmit = handleSubmit( async(values,actions) => {
    console.log(values);
 
+   var instance = axios.create({
+        validateStatus: function (status) {
+            return status == 201;
+        }
+    });
 
-  await axios.post('/register', values, { validateStatus: function (status) {
-          return status > 300; // Reject only if the status code is greater than or equal to 300
-        }})
+  instance.post('/register', values)
     .then( 
    (response) => { 
-      if(response.data.status == 'failed'){
-       
-        actions.setErrors(response.data.error);
-      
-      }
-      else{
+    console.log(response);
         Swal.fire({
           icon: 'success',
           title: 'Success!',
           text: 'Registeration Completed Successfully',
         });
-      }
+        modalClose();
+      
    },
    (error) => {
       console.log(error);
+      actions.setErrors(error.response.data.error);
     }
    );
  

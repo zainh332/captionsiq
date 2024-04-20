@@ -204,7 +204,7 @@ const { errors, handleSubmit,defineField,resetForm,setFieldError, setErrors } = 
       username: yup.string().required().label('Username'),
       fullname: yup.string().required().label('Name'),
       email: yup.string().email().required().label('Email'),
-      password: yup.string().min(5).required(),
+      password: yup.string().min(8).required(),
       confirmPassword: yup
         .string()
         .required()
@@ -228,10 +228,17 @@ const { errors, handleSubmit,defineField,resetForm,setFieldError, setErrors } = 
   const [confirmPassword, confirmPasswordAttrs] = defineField('confirmPassword');
   const [image, imageAttrs] = defineField('image');
 
-  const onSubmit = handleSubmit(async (values) => {
+  const onSubmit = handleSubmit(async (values,actions) => {
     console.log(values); // send data to API
     const token = store.getters.StateUser.token;
-    const response = await axios.post('/profile', {
+
+    var instance = axios.create({
+        validateStatus: function (status) {
+            return status == 200;
+        }
+    });
+
+instance.post('/profile', {
             username: values.username,
             email: values.email,
             password: values.password,
@@ -245,24 +252,28 @@ const { errors, handleSubmit,defineField,resetForm,setFieldError, setErrors } = 
                 'Content-Type': 'multipart/form-data'
                 
             }
-        });
-
-        if(response){
-            await store.dispatch('updateProfile', response);
-            //commit("setUser", response);
-
-            imagCheck.value = store.getters.StateUser.user.image
-            console.log('imagCheck',imagCheck);
-            
-            Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: response.data.message,
-            }); 
+        }) .then( 
+   (response) => { 
+    console.log(response);
+   
+    store.dispatch('updateProfile', response);
+        imagCheck.value = store.getters.StateUser.user.image
+        console.log('imagCheck',imagCheck);
         
-            // resetForm();
-            return;
-        }
+        Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: response.data.message,
+        }); 
+
+        // resetForm();
+        return;
+   },
+   (error) => {
+      console.log(error);
+      actions.setErrors(error.response.data.data);
+    }
+   );
 });
 
 

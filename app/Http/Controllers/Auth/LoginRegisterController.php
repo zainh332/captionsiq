@@ -26,7 +26,7 @@ class LoginRegisterController extends Controller
                 'message' => 'Validation Error!',
                 'error' => $validate->errors(),
             ];
-            return response()->json($response, 400);
+            return response()->json($response, 403);
             //throw new \Illuminate\Validation\ValidationException($validate);
             //dd($request->all());
         }
