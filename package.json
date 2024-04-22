@@ -9,14 +9,14 @@
         "@headlessui/vue": "^1.7.19",
         "@heroicons/vue": "^2.1.1",
         "autoprefixer": "^10.4.19",
-        "axios": "^1.6.4",
+        "axios": "^1.6.8",
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.4.38",
         "primevue": "^3.49.1",
         "tailwindcss": "^3.4.1",
         "vite": "^5.0.0",
         "vue": "^3.4.19",
-        "vue-router": "^4.0.13",
+        "vue-router": "^4.3.0",
         "vue-slick-carousel": "^1.0.6",
         "vue3-carousel": "^0.3.1",
         "vueperslides": "^3.5.1"
@@ -28,8 +28,9 @@
         "vee-validate": "^4.12.6",
         "vite": "^5.1.4",
         "vue": "^3.4.21",
-        "vue-router": "^4.3.0",
         "vue-template-compiler": "^2.7.16",
+        "vuex": "^4.1.0",
+        "vuex-persistedstate": "^4.1.0",
         "yup": "^1.4.0"
     }
 }

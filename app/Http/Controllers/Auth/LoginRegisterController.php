@@ -12,19 +12,23 @@ class LoginRegisterController extends Controller
 {
     public function register(Request $request)
     {
+      
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:250',
-            'user_name' => 'required|string|max:50|unique:users,user_name',
+            'username' => 'required|string|max:50|unique:users,user_name',
             'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
-            'password' => 'required|string|min:8|confirmed'
+            'password' => 'required|string|min:8'
         ]);
 
         if($validate->fails()){
-            return response()->json([
+            $response = [
                 'status' => 'failed',
                 'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-            ], 403);
+                'error' => $validate->errors(),
+            ];
+            return response()->json($response, 403);
+            //throw new \Illuminate\Validation\ValidationException($validate);
+            //dd($request->all());
         }
 
         $user = User::create([
@@ -34,7 +38,7 @@ class LoginRegisterController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
-        $data['token'] = $user->createToken($request->email)->plainTextToken;
+        // $data['token'] = $user->createToken($request->email)->plainTextToken;
         $data['user'] = $user;
 
         $response = [
@@ -43,7 +47,7 @@ class LoginRegisterController extends Controller
             'data' => $data,
         ];
 
-        return response()->json($response, 201);
+        return response()->json( $response, 201);
     }
 
     /**

@@ -41,15 +41,34 @@
                       <form class="space-y-6" @submit="onSubmit">
                         <div>
                           <label
-                            for="username"
+                            for="name"
+                            class="block text-sm font-medium leading-6 text-gray-900">
+                            Name*
+                          </label>
+                          <div class="mt-2">
+                            <input
+                              id="name"
+                              name="name"
+                              type="text"
+                              autocomplete="name"
+                              v-model="name"
+                              v-bind="nameAttrs"
+                              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
+                            />
+                          </div>
+                          <span v-if="errors.name" class="text-red-500">{{ errors.name }}</span>
+                        </div>
+                        <div>
+                          <label
+                            for="name"
                             class="block text-sm font-medium leading-6 text-gray-900">
                             Username*
                           </label>
                           <div class="mt-2">
                             <input
-                              id="username"
-                              name="username"
-                              type="username"
+                              id="name"
+                              name="name"
+                              type="text"
                               autocomplete="username"
                               v-model="username"
                               v-bind="usernameAttrs"
@@ -98,12 +117,12 @@
                           <span v-if="errors.password" class="text-red-500">{{ errors.password }}</span>
                         </div>
   
-                        <div class="flex items-center justify-between">
+                        <!-- <div class="flex items-center justify-between">
                           <div class="flex items-center">
                             <input id="remember-me" name="remember-me" type="checkbox" class="w-3 h-3 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600" style="margin-right: 5px;"/>
                             <label for="remember-me" class="block ml-3 text-sm leading-6 text-gray-900"> Remember me</label>
                           </div>
-                        </div>
+                        </div> -->
   
                         <div>
                           <button type="submit" class="modal-btn">Sign Up</button>
@@ -120,34 +139,37 @@
     </TransitionRoot>
   </template>
   
-  <script setup>
+<script setup>
  import { ref , defineProps, defineEmits} from "vue";
   import Logo from '@/assets/Logo.png'
   import axios from 'axios';
   import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
-
+  import Swal from 'sweetalert2';
   // Define props
   const props = defineProps({ open: Boolean });
 
 
-  const { errors, handleSubmit,defineField,resetForm } = useForm({
+  const { errors, handleSubmit,defineField,resetForm,setFieldError, setErrors } = useForm({
     initialValues: {
+      name: '',
       username: '',
       email: '',
       password: '',
     },
     validationSchema: yup.object({
+      name: yup.string().required().label('Name'),
       username: yup.string().required().label('Username'),
       email: yup.string().email().required().label('Email'),
-      password: yup.string().min(6).required().label('Password'),
+      password: yup.string().min(8).required().label('Password'),
     }),
   });
 
   const [email, emailAttrs] = defineField('email');
   const [password, passwordAttrs] = defineField('password');
   const [username, usernameAttrs] = defineField('username');
+  const [name, nameAttrs] = defineField('name');
 
 
 // Define emits
@@ -161,38 +183,36 @@ const modalClose = () => {
   // resetForm();
 };
 
-const onSubmit = handleSubmit(async (values) => {
-    console.log(values); // send data to API 
-    try {
-      const response = await axios.post('/api/signup', {
-        username: values.username,
-        email: values.email,
-        password: values.password
-      });
 
-   
-      // Handle successful sign-in response
+const onSubmit = handleSubmit( async(values,actions) => {
+   console.log(values);
+
+   var instance = axios.create({
+        validateStatus: function (status) {
+            return status == 201;
+        }
+    });
+
+  instance.post('/register', values)
+    .then( 
+   (response) => { 
+    console.log(response);
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: response.data.message,
+          text: 'Registeration Completed Successfully',
         });
-
-        // Optionally, redirect the user after successful sign-in
-        router.push('/collection');
+        modalClose();
       
-
-    } catch (error) {
-      // Handle sign-in error
-      Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: (error.response) ? error.response.data.message : 'An Error Occured',
-        });
+   },
+   (error) => {
       console.log(error);
-    
+      actions.setErrors(error.response.data.error);
     }
-  resetForm();
-});
+   );
+ 
+
+}); 
+
 </script>
   

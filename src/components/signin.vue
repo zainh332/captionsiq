@@ -81,12 +81,12 @@
                           <span v-if="errors.password" class="text-red-500">{{ errors.password }}</span>
                         </div>
   
-                        <div class="flex items-center justify-between">
+                        <!-- <div class="flex items-center justify-between">
                           <div class="flex items-center">
                             <input id="remember-me" name="remember-me" type="checkbox" class="w-3 h-3 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600" style="margin-right: 5px;"/>
                             <label for="remember-me" class="block ml-3 text-sm leading-6 text-gray-900"> Remember me</label>
                           </div>
-                        </div>
+                        </div> -->
   
                         <div>
                           <button type="submit" class="modal-btn">Sign in</button>
@@ -158,6 +158,10 @@
   import SignUpModal from "../components/signup.vue";
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
+  import { useStore } from 'vuex';
+
+  const store = useStore();
+  const router = useRouter();
 
   // Define props
   const props = defineProps({ open: Boolean });
@@ -200,35 +204,29 @@
   const onSubmit = handleSubmit(async (values) => {
     console.log(values); // send data to API
 
-    try {
-      const response = await axios.post('/api/login', {
-        email: values.email,
-        password: values.password
-      });
-      console.log(response);
-   
+      const User = new FormData();
+      User.append("email", values.email);
+      User.append("password", values.password);
+    
+      try {
+     
+        await store.dispatch('LogIn', User);
       // Handle successful sign-in response
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: response.data.message,
+          text: 'Login Successfully',
         });
 
         modalClose();
-        localStorage.setItem('token',response.data.data.token);
-        // Optionally, redirect the user after successful sign-in
-        // router.push('/collection');
-      
 
     } catch (error) {
-      console.log(error);
       // Handle sign-in error
       Swal.fire({
           icon: 'error',
           title: 'Error!',
-          text: (error.response) ? error.response.data.message : 'An Error Occured',
+          text: error,
         });
-      console.log(error);
     
     }
     resetForm();
