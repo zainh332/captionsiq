@@ -1,6 +1,6 @@
 <template>
     <TransitionRoot as="template" :show="open">
-      <Dialog as="div" class="relative z-40" @close="open = false">
+      <Dialog as="div" class="relative z-40" @close="modalClose">
         <!-- Backgound blur -->
         <TransitionChild
           as="template"
@@ -38,12 +38,12 @@
   
                   <div class="mt-4 ">
                     <div class="">
-                      <form class="space-y-6" @submit="submitForm">
+                      <form class="space-y-6" @submit="onSubmit">
                         <div>
                           <label
                             for="username"
                             class="block text-sm font-medium leading-6 text-gray-900">
-                            Username
+                            Username*
                           </label>
                           <div class="mt-2">
                             <input
@@ -51,17 +51,18 @@
                               name="username"
                               type="username"
                               autocomplete="username"
-                              required=""
-                              v-model="values.username"
+                              v-model="username"
+                              v-bind="usernameAttrs"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
                             />
                           </div>
+                          <span v-if="errors.username" class="text-red-500">{{ errors.username }}</span>
                         </div>
                         <div>
                           <label
                             for="email"
                             class="block text-sm font-medium leading-6 text-gray-900">
-                            Email address
+                            Email Address*
                           </label>
                           <div class="mt-2">
                             <input
@@ -69,18 +70,19 @@
                               name="email"
                               type="email"
                               autocomplete="email"
-                              required=""
-                              v-model="values.email"
+                              v-model="email"
+                              v-bind="emailAttrs"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
                             />
                           </div>
+                          <span v-if="errors.email" class="text-red-500">{{ errors.email }}</span>
                         </div>
   
                         <div>
                           <label
                             for="password"
                             class="block text-sm font-medium leading-6 text-gray-900">
-                            Password
+                            Password*
                             </label>
                           <div class="mt-2 mb-2">
                             <input
@@ -88,11 +90,12 @@
                               name="password"
                               type="password"
                               autocomplete="current-password"
-                              required=""
-                              v-model="values.password"
+                              v-model="password"
+                              v-bind="passwordAttrs"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                           </div>
+                          <span v-if="errors.password" class="text-red-500">{{ errors.password }}</span>
                         </div>
   
                         <div class="flex items-center justify-between">
@@ -118,58 +121,78 @@
   </template>
   
   <script setup>
- import { ref , defineProps, reactive} from "vue";
+ import { ref , defineProps, defineEmits} from "vue";
   import Logo from '@/assets/Logo.png'
   import axios from 'axios';
   import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
-//   import Swal from 'sweetalert2';
-  import { useRouter } from 'vue-router'
+  import { useForm } from 'vee-validate';
+  import * as yup from 'yup';
 
   // Define props
   const props = defineProps({ open: Boolean });
 
-  // Reactive object to store form values
-  const values = reactive({
-    username: "",
-    email: "",
-    password: "",
+
+  const { errors, handleSubmit,defineField,resetForm } = useForm({
+    initialValues: {
+      username: '',
+      email: '',
+      password: '',
+    },
+    validationSchema: yup.object({
+      username: yup.string().required().label('Username'),
+      email: yup.string().email().required().label('Email'),
+      password: yup.string().min(6).required().label('Password'),
+    }),
   });
 
-//   const submitForm = (event) => {
-//     event.preventDefault(); // Prevent default form submission (prevent reload page)
+  const [email, emailAttrs] = defineField('email');
+  const [password, passwordAttrs] = defineField('password');
+  const [username, usernameAttrs] = defineField('username');
 
-//     axios.post('/api/signup', values, {
-//       headers: {
-//         'X-CSRF-TOKEN': window.Laravel.csrfToken,
-//       }
-//     })
-//     .then((response) => {
-//       if (response.data.status === 'success') {
-//         Swal.fire({
-//           icon: 'success',
-//           title: 'Success!',
-//           text: response.data.msg,
-//         });
-//         // Reset form values
-//         for (let key in values) {
-//           values[key] = "";
-//         }
-//       } else {
-//         Swal.fire({
-//           icon: 'error',
-//           title: 'Error!',
-//           text: response.data.msg,
-//         });
-//       }
-//     })
-//     .catch((error) => {
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Error!',
-//         text: 'An error occurred while processing your request.',
-//       });
-//       console.error(error); // Log the error to the console for debugging
-//     });
-//   }
+
+// Define emits
+const emits = defineEmits(['closeSignup']);
+
+const modalClose = () => {
+  
+  props.open = false;
+  // Emit the 'close' event
+  emits('closeSignup');
+  // resetForm();
+};
+
+const onSubmit = handleSubmit(async (values) => {
+    console.log(values); // send data to API 
+    try {
+      const response = await axios.post('/api/signup', {
+        username: values.username,
+        email: values.email,
+        password: values.password
+      });
+
+   
+      // Handle successful sign-in response
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: response.data.message,
+        });
+
+        // Optionally, redirect the user after successful sign-in
+        router.push('/collection');
+      
+
+    } catch (error) {
+      // Handle sign-in error
+      Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: (error.response) ? error.response.data.message : 'An Error Occured',
+        });
+      console.log(error);
+    
+    }
+  resetForm();
+});
 </script>
   
