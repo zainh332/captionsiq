@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\LoginRegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,22 +16,20 @@ use App\Http\Controllers\Auth\LoginRegisterController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+// Route::middleware('guest')->group(function(){
 
-// Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
-
-Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
-
-Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
-
-Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
-
-
+// })
 
 Route::controller(LoginRegisterController::class)->group(function() {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
 });
 
+
+Route::controller(ForgotPasswordController::class)->group(function() {
+    Route::post('/forgot-password', 'forgotPassword');
+    Route::post('/reset-password', 'reset');
+});
 
 
 Route::middleware('auth:sanctum')->group( function () {
