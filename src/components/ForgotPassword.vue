@@ -149,36 +149,32 @@
   //   });
   // }
 
-  const onSubmit = handleSubmit(async (values) => {
+  const onSubmit = handleSubmit(async (values,actions) => {
     console.log(values); // send data to API
-    try {
-      const response = await axios.post('/api/login', {
-        email: values.email,
-        //password: values.password
-      });
+    var instance = axios.create({
+        validateStatus: function (status) {
+            return status == 200;
+        }
+    });
 
-   
-      // Handle successful sign-in response
+    instance.post('/forgot-password', values)
+    .then( 
+   (response) => { 
+    console.log(response);
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: response.data.message,
+          text: 'Password Reset Link Sent Successfully',
         });
-
-        // Optionally, redirect the user after successful sign-in
-        router.push('/collection');
+        modalClose();
       
-
-    } catch (error) {
-      // Handle sign-in error
-      Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: (error.response) ? error.response.data.message : 'An Error Occured',
-        });
+   },
+   (error) => {
       console.log(error);
-    
+      actions.setErrors(error.response.data.errors);
     }
+   );
+
     resetForm();
   });
 </script>
