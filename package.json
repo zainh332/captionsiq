@@ -22,10 +22,14 @@
         "vueperslides": "^3.5.1"
     },
     "dependencies": {
+        "@vee-validate/rules": "^4.5.8",
         "@vitejs/plugin-vue": "^5.0.4",
+        "sweetalert2": "^11.10.7",
+        "vee-validate": "^4.12.6",
         "vite": "^5.1.4",
         "vue": "^3.4.21",
         "vue-router": "^4.3.0",
-        "vue-template-compiler": "^2.7.16"
+        "vue-template-compiler": "^2.7.16",
+        "yup": "^1.4.0"
     }
 }
