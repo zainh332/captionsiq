@@ -1,6 +1,6 @@
 <template>
     <TransitionRoot as="template" :show="open">
-      <Dialog as="div" class="relative z-40" @close="open = false">
+      <Dialog as="div" class="relative z-40" @close="modalClose">
         <!-- Backgound blur -->
         <TransitionChild
           as="template"
@@ -38,12 +38,12 @@
   
                   <div class="mt-4 ">
                     <div class="">
-                      <form class="space-y-6" @submit="submitForm">
+                      <form class="space-y-6" @submit="onSubmit">
                         <div>
                           <label
                             for="email"
                             class="block text-sm font-medium leading-6 text-gray-900">
-                            Email address
+                            Email Address*
                           </label>
                           <div class="mt-2">
                             <input
@@ -51,18 +51,21 @@
                               name="email"
                               type="email"
                               autocomplete="email"
-                              required=""
-                              v-model="values.email"
+                              v-model="email"
+                              v-bind="emailAttrs"
+                              autofocus="blur"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
                             />
                           </div>
+                      
+                          <span v-if="errors.email" class="text-red-500">{{ errors.email }}</span>
                         </div>
   
                         <div>
                           <label
                             for="password"
                             class="block text-sm font-medium leading-6 text-gray-900">
-                            Password
+                            Password*
                             </label>
                           <div class="mt-2 mb-2">
                             <input
@@ -70,11 +73,12 @@
                               name="password"
                               type="password"
                               autocomplete="current-password"
-                              required=""
-                              v-model="values.password"
+                              v-model="password"
+                              v-bind="passwordAttrs"
                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                           </div>
+                          <span v-if="errors.password" class="text-red-500">{{ errors.password }}</span>
                         </div>
   
                         <div class="flex items-center justify-between">
@@ -90,7 +94,10 @@
                       </form>
   
                       <div>
-                        <span class="relative flex justify-center px-6 text-sm font-medium leading-6 text-gray-900 bg-white"  @click="OpenSignUpModal">New here? Create an account</span>
+                        <span class="relative flex justify-center px-6 text-sm font-medium leading-6 text-gray-900 bg-white"  @click="OpenSignUpModal">New here? <a href="#" style="color: palevioletred; padding-left: 2%;"> Create an account</a></span>
+
+                        <span class="mt-2 relative flex justify-center px-6 text-sm font-medium leading-6 text-gray-900 bg-white"  @click="OpenForgotPasswordnModal">Forgot Password?</span>
+
                         <div class="relative mt-10">
                           <div class="absolute inset-0 flex items-center" aria-hidden="true">
                             <div class="w-full border-t border-gray-200" />
@@ -132,69 +139,111 @@
           </div>
         </div>
       </Dialog>
+      
     </TransitionRoot>
-    <SignUpModal :open="signUpModal"/>
+    <SignUpModal :open="signUpModal"  @closeSignup="signUpModalClose"/>
+    <ForgotPassword :open="forgotPassword" @closeSignInModal="closeForgotPasswordnModal"/>
+
   </template>
   
-  <script setup>
- import { ref , defineProps, reactive} from "vue";
+<script setup>
+ 
+  import { ref , defineProps,defineEmits,onMounted} from "vue";
   import Logo from '@/assets/Logo.png'
   import axios from 'axios';
   import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
-//   import Swal from 'sweetalert2';
   import { useRouter } from 'vue-router'
+  import Swal from 'sweetalert2';
+  import ForgotPassword from "../components/ForgotPassword.vue";
+  import SignUpModal from "../components/signup.vue";
+  import { useForm } from 'vee-validate';
+  import * as yup from 'yup';
 
   // Define props
   const props = defineProps({ open: Boolean });
 
-  // Reactive object to store form values
-  const values = reactive({
-    email: "",
-    password: "",
-  });
+  const signUpModal  = ref(false);
+  const OpenSignUpModal = (e) => {
+    modalClose();
+    signUpModal.value = true;
+  };
 
-  import SignUpModal from "../components/signup.vue";
-
-const signUpModal  = ref(false);
-const OpenSignUpModal = (e) => {
-  signUpModal.value = true;
+  const signUpModalClose = () => {  //closes the signup modal when clicked outside
+    signUpModal.value = false;
 };
 
-//   const submitForm = (event) => {
-//     event.preventDefault(); // Prevent default form submission (prevent reload page)
+  const forgotPassword  = ref(false);
+  const OpenForgotPasswordnModal = (e) => {
+    modalClose();
+    forgotPassword.value = true;
+  };
+  
+  const closeForgotPasswordnModal = (e) => {  //closes the forgot password modal when clicked outside
+    forgotPassword.value = false;
+  };
 
-//     axios.post('/api/login', values, {
-//       headers: {
-//         'X-CSRF-TOKEN': window.Laravel.csrfToken,
-//       }
-//     })
-//     .then((response) => {
-//       if (response.data.status === 'success') {
-//         Swal.fire({
-//           icon: 'success',
-//           title: 'Success!',
-//           text: response.data.msg,
-//         });
-//         // Reset form values
-//         for (let key in values) {
-//           values[key] = "";
-//         }
-//       } else {
-//         Swal.fire({
-//           icon: 'error',
-//           title: 'Error!',
-//           text: response.data.msg,
-//         });
-//       }
-//     })
-//     .catch((error) => {
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Error!',
-//         text: 'An error occurred while processing your request.',
-//       });
-//       console.error(error); // Log the error to the console for debugging
-//     });
-//   }
+  const { errors, handleSubmit,defineField,resetForm } = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: yup.object({
+      email: yup.string().email().required().label('Email'),
+      password: yup.string().required().label('Password'),
+    }),
+  });
+
+  const [email, emailAttrs] = defineField('email');
+  const [password, passwordAttrs] = defineField('password');
+
+
+  const onSubmit = handleSubmit(async (values) => {
+    console.log(values); // send data to API
+
+    try {
+      const response = await axios.post('/api/login', {
+        email: values.email,
+        password: values.password
+      });
+      console.log(response);
+   
+      // Handle successful sign-in response
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: response.data.message,
+        });
+
+        modalClose();
+        localStorage.setItem('token',response.data.data.token);
+        // Optionally, redirect the user after successful sign-in
+        // router.push('/collection');
+      
+
+    } catch (error) {
+      console.log(error);
+      // Handle sign-in error
+      Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: (error.response) ? error.response.data.message : 'An Error Occured',
+        });
+      console.log(error);
+    
+    }
+    resetForm();
+  });
+
+  // Define emits
+  const emits = defineEmits(['close']);
+
+  const modalClose = () => {  
+
+    props.open = false;
+    // Emit the 'close' event
+    emits('close');
+    resetForm();
+  };
+
 </script>
   
