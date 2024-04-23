@@ -33,7 +33,7 @@ class LoginRegisterController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'user_name' => $request->user_name,
+            'user_name' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);

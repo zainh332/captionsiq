@@ -77,17 +77,16 @@
   </template>
   
   <script setup>
- import { ref , defineProps, reactive} from "vue";
-  import Logo from '@/assets/Logo.png'
-  import axios from 'axios';
-  import { Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
-  import { useForm } from 'vee-validate';
-  import * as yup from 'yup';
-  import Swal from 'sweetalert2';
+ import Logo from '@/assets/Logo.png';
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from "@headlessui/vue";
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { useForm } from 'vee-validate';
+import { defineProps } from "vue";
+import * as yup from 'yup';
 
   // Define props
   const props = defineProps({ open: Boolean });
-
 
 // Define emits
   const emits = defineEmits(['closeSignInModal']);
@@ -111,44 +110,6 @@
 
   const [email, emailAttrs] = defineField('email');
 
-
-  //   const submitForm = (event) => {
-  //   event.preventDefault(); // Prevent default form submission (prevent reload page)
-
-  //   axios.post('/api/signup', values, {
-  //     headers: {
-  //       'X-CSRF-TOKEN': window.Laravel.csrfToken,
-  //     }
-  //   })
-  //   .then((response) => {
-  //     if (response.data.status === 'success') {
-  //       Swal.fire({
-  //         icon: 'success',
-  //         title: 'Success!',
-  //         text: response.data.msg,
-  //       });
-  //       // Reset form values
-  //       for (let key in values) {
-  //         values[key] = "";
-  //       }
-  //     } else {
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Error!',
-  //         text: response.data.msg,
-  //       });
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     Swal.fire({
-  //       icon: 'error',
-  //       title: 'Error!',
-  //       text: 'An error occurred while processing your request.',
-  //     });
-  //     console.error(error); // Log the error to the console for debugging
-  //   });
-  // }
-
   const onSubmit = handleSubmit(async (values,actions) => {
     console.log(values); // send data to API
     var instance = axios.create({
@@ -171,7 +132,20 @@
    },
    (error) => {
       console.log(error);
-      actions.setErrors(error.response.data.errors);
+      // actions.setErrors(error.response.data.error);
+      if(error.response.data.data){
+        console.log(1);
+        actions.setErrors(error.response.data.data);
+      }
+      else{
+        console.log(2);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          // text: error.response.data.error,
+          text: 'Email already sent!',
+        });
+      }
     }
    );
 

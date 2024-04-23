@@ -77,7 +77,7 @@
   <a href="#">
     <div class="flex items-center gap-3"> <!-- Increased gap to create space between image and text -->
       <!-- <img class="w-12 h-12 object-cover rounded-full" src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNxdWFyZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt=""> -->
-      <img v-if="store.getters.StateUser.user.image == null" class="w-12 h-12 object-cover rounded-full"
+      <img v-if="store?.getters?.StateUser?.user?.image == null" class="w-12 h-12 object-cover rounded-full"
                             src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNxdWFyZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
                             alt="">
                             <img v-else class="w-12 h-12 object-cover rounded-full"
@@ -85,7 +85,7 @@
                             alt="">
       <div>
         <p class="text-[#EC047A]">Welcome</p>
-        <p class="text-black font-medium">{{ store.getters.StateUser.user.name }}</p>
+        <p class="text-black font-medium">{{ store?.getters?.StateUser?.user?.name }}</p>
       </div>
     </div>
   </a>
@@ -133,13 +133,14 @@
     <SigninModal :open="signInModal" @close="handleModalClose" />
 </template>
 <script setup>
+import { computed, ref } from "vue";
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import Logo from "../assets/Logo.png";
-import IconArrow from "../components/icons/arrowDown.vue";
 import IconGlobal from "../components/icons/IconGlobal.vue";
 import IconProfile from "../components/icons/IconProfile.vue";
-import { defineProps , ref ,computed} from "vue";
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import IconArrow from "../components/icons/arrowDown.vue";
+import SigninModal from "../components/signin.vue";
 // const props = defineProps({
 //     login: Boolean
 // });
@@ -163,7 +164,6 @@ const mobileNav = ref(false);
 const isMobileNav = () =>{
 mobileNav.value = !mobileNav.value;
 };
-import SigninModal from "../components/signin.vue";
 
 const signInModal  = ref(false);
 const OpenSignInModal = (e) => {
