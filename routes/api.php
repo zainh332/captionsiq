@@ -16,10 +16,6 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-// Route::middleware('guest')->group(function(){
-
-// })
-
 Route::controller(LoginRegisterController::class)->group(function() {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
@@ -28,7 +24,7 @@ Route::controller(LoginRegisterController::class)->group(function() {
 
 Route::controller(ForgotPasswordController::class)->group(function() {
     Route::post('/forgot-password', 'forgotPassword');
-    Route::post('/reset-password', 'reset');
+    Route::post('/reset-password', 'resetPassword');
 });
 
 

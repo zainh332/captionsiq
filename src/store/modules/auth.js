@@ -6,7 +6,7 @@ const state = {
 };
 
 const getters = {
-  isAuthenticated: (state) => !!state.user,
+  isAuthenticated: (state) => !!state.user && !!Object.keys(state.user).length,
   StateUser: (state) => state.user,
 };
 
