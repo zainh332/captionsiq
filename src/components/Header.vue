@@ -3,7 +3,7 @@
         <div
             class="grid grid-cols-1 md:grid-cols-3  lg:grid-cols-2 items-center justify-items-end gap-y-10 px-4 max-w-7xl mx-auto">
             <div class="space-y-3 sm:space-y-6 col-span-1 md:col-span-2 lg:col-span-1">
-                <h1 class="linear text-xl sm:text-3xl sm:text-4xl font-bold">Free Online ALCaption Generator Image to
+                <h1 class="linear text-xl sm:text-3xl sm:text-4xl font-bold">Free Online ALCaption1111111 Generator Image to
                     Text</h1>
                 <p>
                     Embrace your inner artist. Create art using artificial intelligence and your own
