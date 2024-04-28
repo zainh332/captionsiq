@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\Auth\LoginRegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
@@ -19,6 +20,13 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 Route::controller(LoginRegisterController::class)->group(function() {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
+});
+
+Route::group(['middleware' => 'cors'], function () {
+    Route::controller(SocialiteController::class)->group(function() {
+        Route::get('/{provider}/redirectgister', 'loginSocial');
+        Route::any('/{provider}/callback', 'callbackSocial');
+    });
 });
 
 
