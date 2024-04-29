@@ -235,13 +235,15 @@ import SignUpModal from "../components/signup.vue";
 
   const generateRoute = (provider) => {
     var instance = axios.create({
-        withCredentials: true,
+      withCredentials: true,
+      withXSRFToken : true
     });
 
     instance.get(`/${provider}/redirectgister`, {
         // Headers should be provided outside of the configuration object
         headers: {
-            'Access-Control-Allow-Origin': true
+          'Accept': 'application/json',
+          'Referer': 'http://127.0.0.1:8000',
         }
     })
     .then(

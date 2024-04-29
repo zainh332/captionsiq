@@ -15,7 +15,7 @@ class SocialiteController extends Controller
     public function loginSocial(Request $request, string $provider)
     {
         $this->validateProvider($request);
-       
+        //dd($provider);
         return Socialite::driver($provider)->redirect();
     }
  
