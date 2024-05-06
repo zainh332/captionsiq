@@ -239,18 +239,12 @@ import SignUpModal from "../components/signup.vue";
       withXSRFToken : true
     });
 
-    instance.get(`/${provider}/redirectgister`, {
-        // Headers should be provided outside of the configuration object
-        headers: {
-          'Accept': 'application/json',
-          'Referer': 'http://127.0.0.1:8000',
-        }
-    })
+    instance.get(`/${provider}/redirectgister`,)
     .then(
         (response) => { 
             console.log(response);
-            debugger;
-            // window.location.href = response.data.redirect;
+            // debugger;
+            window.location.href = response.data;
         },
         (error) => {
             console.log(error);

@@ -16,27 +16,28 @@ class SocialiteController extends Controller
     {
         $this->validateProvider($request);
         //dd($provider);
-        return Socialite::driver($provider)->redirect();
+        return Socialite::driver($provider)->redirect()->getTargetUrl();
     }
  
     public function callbackSocial(Request $request, string $provider)
-    {
+    {   //dd($request,$provider);
         $this->validateProvider($request);
  
-        $response = Socialite::driver($provider)->user();
+        $response = Socialite::driver($provider)->stateless()->user();
+        //dd($response->id);
  
         $user = User::firstOrCreate(
-            ['email' => $response->getEmail()],
+            ['email' => $response->email],
             ['password' => Str::password()]
         );
-        $data = [$provider . '_id' => $response->getId()];
+        $data = [$provider . '_id' => $response->id];
  
         if ($user->wasRecentlyCreated) {
-            $data['name'] = $response->getName() ?? $response->getNickname();
+            $data['name'] = $response->name ?? $response->nickname;
  
-            event(new Registered($user));
+            //event(new Registered($user));
         }
- 
+        dd($data);
         $user->update($data);
  
         Auth::login($user, remember: true);
