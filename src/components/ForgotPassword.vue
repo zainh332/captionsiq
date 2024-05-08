@@ -1,4 +1,3 @@
-
 <template>
     <TransitionRoot as="template" :show="open">
       <Dialog as="div" class="relative z-40" @close="modalClose">
@@ -62,7 +61,7 @@
                         </div>
   
                         <div>
-                          <button type="submit" class="modal-btn">Send Email</button>
+                          <button type="submit" class="modal-btn">{{ buttonText }}</button>
                         </div>
                       </form>
                     </div>
@@ -76,13 +75,13 @@
     </TransitionRoot>
   </template>
   
-  <script setup>
+<script setup>
  import Logo from '@/assets/Logo.png';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useForm } from 'vee-validate';
-import { defineProps } from "vue";
+import { defineProps, onMounted,ref } from "vue";
 import * as yup from 'yup';
 
   // Define props
@@ -97,7 +96,12 @@ import * as yup from 'yup';
     emits('closeSignInModal');
     // resetForm();
   };
+  const buttonText = ref('');
 
+  onMounted(() => {
+      // Set the button text
+      buttonText.value = 'Send Email';
+    });
 
   const { errors, handleSubmit,defineField,resetForm } = useForm({
       initialValues: {
@@ -111,6 +115,7 @@ import * as yup from 'yup';
   const [email, emailAttrs] = defineField('email');
 
   const onSubmit = handleSubmit(async (values,actions) => {
+    buttonText.value = "Sending Email"
     console.log(values); // send data to API
     var instance = axios.create({
         validateStatus: function (status) {

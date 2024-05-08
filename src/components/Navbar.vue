@@ -93,7 +93,9 @@
         <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">Profile</a>
         <a href="#" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">Settings</a>
         <div class="border-t"></div> -->
+        <a href="/profile" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100" >Profile</a>
         <a href="#" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100" @click.prevent="logout">Logout</a>
+        
       </div>
     </div>
 

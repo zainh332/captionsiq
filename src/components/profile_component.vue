@@ -204,10 +204,9 @@ const { errors, handleSubmit,defineField,resetForm,setFieldError, setErrors } = 
       username: yup.string().required().label('Username'),
       fullname: yup.string().required().label('Name'),
       email: yup.string().email().required().label('Email'),
-      password: yup.string().min(8).required(),
+      password: yup.string().nullable(),
       confirmPassword: yup
         .string()
-        .required()
         .oneOf([yup.ref('password')], 'Passwords do not match').label('Confirm Password'), // Use yup.ref() to reference the password field
       image: yup
         .mixed()

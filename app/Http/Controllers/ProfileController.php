@@ -30,7 +30,7 @@ class ProfileController extends Controller
                 'max:250',
                 Rule::unique('users', 'email')->ignore(auth()->id()),
             ],
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'nullable|string|confirmed',
             'image' => 'mimes:doc,pdf,docx,zip,jpeg,png,jpg,gif,svg',
         ]);
         

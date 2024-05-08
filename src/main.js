@@ -6,7 +6,7 @@ import store from './store';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
-const baseURL = 'http://127.0.0.1:8000/api/';
+const baseURL = 'http://captionsiq.test/api/';
 axios.defaults.baseURL = baseURL;
 
 
